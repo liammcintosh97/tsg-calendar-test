@@ -1,0 +1,85 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/DINPro-Black.ttf",
+      "sha1": "f16bf59892f616618d885e368838a9a85e3ac84d"
+    },
+    {
+      "path": "assets/fonts/DINPro-BlackItalic.ttf",
+      "sha1": "ae646cf70acc90a12367ed82fd3710d8da270e4b"
+    },
+    {
+      "path": "assets/fonts/DINPro-Bold.ttf",
+      "sha1": "8249ae40629a77f890845ea07a252a80e00ae0a3"
+    },
+    {
+      "path": "assets/fonts/DINPro-BoldItalic.ttf",
+      "sha1": "6b1b3fb36ca0c96abf4eb5546e130a7b14e0c591"
+    },
+    {
+      "path": "assets/fonts/DINPro-Cond.ttf",
+      "sha1": "a0447e7097399394de8074fa4ff21a36f987c33a"
+    },
+    {
+      "path": "assets/fonts/DINPro-CondBlack.ttf",
+      "sha1": "29d975e6b5350877bb5f85c2d766b5a46db3cec8"
+    },
+    {
+      "path": "assets/fonts/DINPro-CondBlackIta.ttf",
+      "sha1": "0ed0dfbbb191373eaeb5d017bc9400de39c42554"
+    },
+    {
+      "path": "assets/fonts/DINPro-CondBold.ttf",
+      "sha1": "9e678b52a2f429f2e11149d518c1c4fb748dec3f"
+    },
+    {
+      "path": "assets/fonts/DINPro-CondBoldIta.ttf",
+      "sha1": "91f1c54b276f97064fcbb44ae88725098d57f258"
+    },
+    {
+      "path": "assets/fonts/DINPro-CondIta.ttf",
+      "sha1": "88da674ef5a87d83f7e3f42041904e4ee2c0d363"
+    },
+    {
+      "path": "assets/fonts/DINPro-CondLight.ttf",
+      "sha1": "6bf34075d4b599da85ed5cf4e806407fdcd87a32"
+    },
+    {
+      "path": "assets/fonts/DINPro-CondLightIta.ttf",
+      "sha1": "663c2cfe8cde8f8a4a75eeac228edd3b753b6193"
+    },
+    {
+      "path": "assets/fonts/DINPro-CondMediIta.ttf",
+      "sha1": "23bc3edf0788064439206fa556b8ba7a28abef5f"
+    },
+    {
+      "path": "assets/fonts/DINPro-CondMedium.ttf",
+      "sha1": "15b4d71b0d5f79b4140a95117f4ccaab9f16aad5"
+    },
+    {
+      "path": "assets/fonts/DINPro-Italic.ttf",
+      "sha1": "0bd30971c12bab2eea57ada820c1a654fe8b3c1a"
+    },
+    {
+      "path": "assets/fonts/DINPro-Light.ttf",
+      "sha1": "5f19bd20bd838476d892c316f563ee78f94fcc7b"
+    },
+    {
+      "path": "assets/fonts/DINPro-LightItalic.ttf",
+      "sha1": "035f4bb4b08bd35c02518e3e2c0627e55316b0cd"
+    },
+    {
+      "path": "assets/fonts/DINPro-Medium.ttf",
+      "sha1": "62a83861dc7826a6d70ec15ceb876924f8883a5c"
+    },
+    {
+      "path": "assets/fonts/DINPro-MediumItalic.ttf",
+      "sha1": "e2bcaabf64747bbbd07318f461aee0af21940aa4"
+    },
+    {
+      "path": "assets/fonts/DINPro.ttf",
+      "sha1": "0214d9a9ae81ed28a1f9f03e387bd4d53ed89768"
+    }
+  ]
+}
