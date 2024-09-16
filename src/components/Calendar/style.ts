@@ -5,11 +5,12 @@ import { textStyles } from "../../styles"
 export const style = StyleSheet.create({
   container: {
     backgroundColor: colors.hex.black,
-    maxWidth: 340,
   },
   calendar: {
-    paddingLeft: 12,
-    paddingRight: 12,
+    marginLeft: 12,
+    marginRight: 12,
+    paddingLeft: 0,
+    paddingRight: 0,
     backgroundColor: 'transparent',
   },
   buttons: {

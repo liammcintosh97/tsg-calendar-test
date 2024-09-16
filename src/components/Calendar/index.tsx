@@ -1,14 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { View, Text, Pressable, PanResponder, FlatList} from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { View, Text, Pressable, FlatList, LayoutRectangle} from "react-native";
 import { LocaleConfig, Calendar as RNCalendar } from "react-native-calendars";
 import { DateData, MarkedDates } from "react-native-calendars/src/types";
 import Button from "../Button";
-import {CalenderProps, DaySelectProps, MonthSelectProps} from './type'
+import {CalenderProps, DaySelectProps, MonthSelectProps, DayProps} from './type'
 import { style } from "./style";
 
 import colors from "../../styles/colors";
 import typography from "../../styles/typography";
-import { DayProps } from "react-native-calendars/src/calendar/day";
 import { MarkingProps } from "react-native-calendars/src/calendar/day/marking";
 import Icon from "../Icon";
 
@@ -29,7 +28,7 @@ LocaleConfig.locales['en'] = {
   ],
   monthNamesShort: ['Jan', 'Feb', 'Mar', 'April', 'May', 'June', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
   dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-  dayNamesCondensed: ['Sun','Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
+  dayNamesCondensed: ['Sun','Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
   dayNamesShort: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
 };
 
@@ -38,14 +37,12 @@ LocaleConfig.defaultLocale = 'en';
 export default function Calendar({onApply, ...restProps}: CalenderProps): JSX.Element {
   const initialCalenderMonth = new Date()
   initialCalenderMonth.setDate(1)
-  const [selection, setSelection] = useState<DateData[]>([])
+  const [displayTest, setDisplayText] = useState<string>('-')
   const [calendarMonth, setCalendarMonth] = useState<Date>(initialCalenderMonth)
   const [monthSelect, setMonthSelect] = useState<boolean>(false)
   const locales = LocaleConfig.locales['en']
 
-  console.log('calendarMonth', calendarMonth.toDateString());
-
-  function parseSelectionString(selection: DateData[]) : string{
+  function selectionToString(selection: DateData[]) : string{
     if (selection.length === 1){
       return `${locales.dayNamesCondensed[new Date(selection[0].timestamp).getDay()]}, ${locales.monthNamesShort[new Date(selection[0].timestamp).getMonth()]} ${selection[0].day}`
     } else if (selection.length > 1) {
@@ -70,7 +67,7 @@ export default function Calendar({onApply, ...restProps}: CalenderProps): JSX.El
     <View style={style.container}>
       <View style={style.header}> 
         <Text style={style.labelText}>Select Date</Text>
-        <Text style={style.displayText}>{parseSelectionString(selection)}</Text>
+        <Text style={style.displayText}>{displayTest}</Text>
       </View>
       <View style={style.monthControls}>
         <Button style={style.monthSelect} type='text' size="small" onPress={() => setMonthSelect(!monthSelect)}>
@@ -91,10 +88,9 @@ export default function Calendar({onApply, ...restProps}: CalenderProps): JSX.El
       {!monthSelect
         ? <DaySelect
           {...restProps}
-          selection={selection}
           calendarMonth={calendarMonth}
           onApply={(selection) => { if(onApply) {onApply(selection)}}}
-          onSelectionChange={(_selection) => setSelection(_selection)}
+          onSelectionChange={(_selection) => setDisplayText(selectionToString(_selection))}
         /> 
         : <MonthSelect
             initialMonth={calendarMonth.getMonth()}
@@ -110,38 +106,45 @@ export default function Calendar({onApply, ...restProps}: CalenderProps): JSX.El
   )     
 }
 
-function Day({state, marking, date, onPress, onLongPress}: DayProps & {
-  date?: DateData;
-}) : JSX.Element {
+function Day({state, marking, date, onPress, onLongPress, calendarDimensions}: DayProps) : JSX.Element {
   const today = state === 'today'
   if(marking) {
     var {selected, marked, startingDay, endingDay} = marking
   }
 
+  console.log(marking)
   return (
     <Pressable 
       onPress={() => onPress(date)} 
       onLongPress={() => onLongPress(date)}
+      style={[{
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: calendarDimensions !== undefined ? calendarDimensions.width / 7: 0,
+        height: calendarDimensions !== undefined ? calendarDimensions.width / 7: 0,
+      }
+    ]}
     >
-      <View 
-        style={[
-          marked && {
-            borderLeftWidth: 4,
-            borderRightWidth: 4,
-            backgroundColor: colors.hex.charcoal[70],
-            borderColor: colors.hex.charcoal[70],
-          },
-          startingDay && {
-            borderTopLeftRadius: 100,
-            borderBottomLeftRadius: 100,
-            borderLeftColor: colors.hex.black,
-          },
-          endingDay && {
-            borderTopRightRadius: 100,
-            borderBottomRightRadius: 100,
-            borderRightColor: colors.hex.black,
-          }
-        ]}>
+      <View style={[
+        {
+          width: '100%', 
+          alignItems: 'center',
+          justifyContent: 'center'
+        },
+        marked && !startingDay && !endingDay && {
+          backgroundColor: colors.hex.charcoal[70]
+        },
+      ]}>
+        { (startingDay || endingDay) &&
+          <View style={{
+            width: '50%',
+            height: '100%',
+            position: 'absolute',
+            left: startingDay ? '50%': 0,
+            right: endingDay ? '50%': 0,
+            backgroundColor: colors.hex.charcoal[70]
+          }}/>
+        }
         <View 
           style={[
             style.dayTextContainer,
@@ -150,7 +153,7 @@ function Day({state, marking, date, onPress, onLongPress}: DayProps & {
             },
             selected && {
               backgroundColor: colors.hex.primary
-            }
+            },
         ]}>
           <Text 
             style={[
@@ -166,8 +169,9 @@ function Day({state, marking, date, onPress, onLongPress}: DayProps & {
   )
 }
 
-function DaySelect({onApply, calendarMonth, onSelectionChange,selection, ...restProps}: DaySelectProps) {
-  const [_selection, setSelection] = useState<DateData[]>(selection)
+function DaySelect({onApply, calendarMonth, onSelectionChange, ...restProps}: DaySelectProps) {
+  const [selection, setSelection] = useState<DateData[]>([])
+  const [calendarDimensions, setCalendatDimensions] = useState<LayoutRectangle>()
   const [markedDates, setMarkedDates] = useState<MarkedDates>()
 
   const onDayPress = useCallback((dateData: DateData) => {
@@ -178,10 +182,11 @@ function DaySelect({onApply, calendarMonth, onSelectionChange,selection, ...rest
     } else _selection = [dateData]
 
     setSelection(_selection)
-  },[_selection])
+  },[selection])
 
   const onDayLongPress = useCallback((dateData: DateData) => {
-    let _selection = [..._selection]
+    console.log('onDayLongPress', dateData);
+    let _selection = [...selection]
 
     if (_selection.length === 0) {
       _selection[0] = dateData
@@ -220,8 +225,9 @@ function DaySelect({onApply, calendarMonth, onSelectionChange,selection, ...rest
     _selection.sort((a, b) => {
       return a.timestamp - b.timestamp
     })
+
     setSelection(_selection)
-  }, [_selection]);
+  }, [selection]);
 
   function parseMarkedDates(dateData: DateData[]): MarkedDates{
     const markedDates: Record<string, MarkingProps> = {}
@@ -233,8 +239,8 @@ function DaySelect({onApply, calendarMonth, onSelectionChange,selection, ...rest
       markedDates[dateData[i].dateString] = {
         selected: start || end, 
         marked: dateData.length > 1,
-        startingDay: start, 
-        endingDay: end
+        startingDay: start  && dateData.length > 1,
+        endingDay: end && dateData.length > 1,
       }
     }
 
@@ -242,18 +248,18 @@ function DaySelect({onApply, calendarMonth, onSelectionChange,selection, ...rest
   }
 
   useEffect(() => {
-    setMarkedDates(parseMarkedDates(_selection))
+    setMarkedDates(parseMarkedDates(selection))
     if (onSelectionChange) {
-      onSelectionChange(_selection)
+      onSelectionChange(selection)
     }
-  },[_selection])
+  },[selection])
 
   return (
-    <View>
+    <View onLayout={(event) => setCalendatDimensions(event.nativeEvent.layout)}>
       <RNCalendar
         {...restProps}
         style={style.calendar}
-        dayComponent={Day}
+        dayComponent={(props) => <Day {...props} calendarDimensions={calendarDimensions}/>}
         theme={{
           textDayFontSize: 16,
           textMonthFontSize: 16,
@@ -262,6 +268,7 @@ function DaySelect({onApply, calendarMonth, onSelectionChange,selection, ...rest
           dayTextColor: colors.hex.white,
           calendarBackground: colors.hex.black
         }}
+        markingType="period"
         markedDates={markedDates}
         onDayPress={onDayPress}
         onDayLongPress={onDayLongPress}
@@ -276,7 +283,7 @@ function DaySelect({onApply, calendarMonth, onSelectionChange,selection, ...rest
         <Button style={[style.button, style.clearButton]} color="black" onPress={() => setSelection([])}>
           <Text style={style.buttonText}>Clear</Text>
         </Button>
-        <Button style={style.button} color="primary" onPress={() => { if(onApply) {onApply(_selection)}}}>
+        <Button style={style.button} color="primary" onPress={() => { if(onApply) {onApply(selection)}}}>
           <Text>Apply</Text>
         </Button>
       </View>
